@@ -1,0 +1,94 @@
+<div ng-controller="GamesCtrl">
+	<h3>Games</h3>
+
+	<div class="row">
+		<div class="col-md-4">
+			List and manage all your games here. Change the status of a game, filter by available or unavailable games.
+		</div>
+	</div>
+	<br/><br/>
+	<div class="row">
+		<div class="col-md-8">
+			
+			<label>Search: 
+				<input ng-model="searchText" class="form-control">
+			</label>
+			<label>Status
+			<select ng-model="searchStatus" class="form-control">
+			  <option value=""></option>
+		      <option value="0">Available</option>
+		      <option value="1">Borrowed</option>
+		    </select>
+			</label>
+			<br/><br/>
+
+			<table class="table striped">
+				<thead>
+					<tr>
+						<th>Name</th>
+						<th>Trailer</th>
+						<th>Plattform</th>
+						<th>Status</th>
+						<th>Borrower</th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td ng-class="{'has-error': !game.name, 'has-success': game.name}">
+					    	<input type="text" ng-model="game.name" name="name" class="form-control">
+				      	</td>
+						<td><input type="text" ng-model="game.trailer" name="trailer" class="form-control"></td>
+						<td ng-class="{'has-error': !game.plattform, 'has-success': game.plattform}">
+							<select ng-model="game.plattform" name="plattform" class="form-control">
+						      <option value="PC">PC</option>
+						      <option value="PS1">PS 1</option>
+						      <option value="PS2">PS 2</option>
+						      <option value="PS3">PS 3</option>
+						      <option value="PS4">PS 4</option>
+						      <option value="Wii">Wii</option>
+						      <option value="WiiU">Wii U</option>
+						      <option value="Xbox">Xbox</option>
+						      <option value="Xbox360">Xbox 360</option>
+						      <option value="XboxOne">Xbox One</option>
+						    </select>
+						</td>
+						<td ng-class="{'has-error': !game.status, 'has-success': game.status}">
+							<select ng-model="game.status" name="status" class="form-control">
+						      <option value="0">Available</option>
+						      <option value="1">Borrowed</option>
+						    </select>
+						</td>
+						<td ng-class="{'has-error': !game.borrower && game.status == 1, 'has-success': game.status == 0 || game.status === undefined || (game.status == 1 && game.borrower)}">
+							<input type="text" ng-model="game.borrower" name="borrower" class="form-control">							
+						</td>
+
+						<td>
+							<button id="addBtn" ng-if="game._id===undefined" class="btn btn-primary" ng-click="addGame()" ng-disabled="!game.name || !game.plattform || !game.status || (!game.borrower && game.status == 1)">Add</button>
+							<button id="updateBtn" ng-if="game._id!==undefined" class="btn btn-info" ng-click="updateGame()" ng-disabled="!game.name || !game.plattform || !game.status || (!game.borrower && game.status == 1)">Update</button>
+						</td>
+					</tr>
+
+					<tr ng-repeat="game in games | filter:{name: searchText, status: searchStatus}">
+						<td>{{game.name}}</td>
+						<td>
+							<a ng-if="game.trailer" href="{{game.trailer}}" target="_blank">Watch Now</a>
+						</td>
+						<td>{{game.plattform}}</td>
+						<td>
+							<div ng-if="game.status == 0">Available</div>
+							<div ng-if="game.status == 1">Borrowed</div>
+						</td>
+						<td>
+							{{game.borrower}}
+						</td>
+						<td>
+							<button class="btn btn-warning" ng-click="editGame(game._id)">Edit</button> 
+							<button class="btn btn-danger" ng-click="deleteGame(game._id)">Delete</button>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
